@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASHU MODS - Admin Security Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       LOGIN VIEW
+  =========================================== -->
+  <div id="login-view" class="login-container">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="app_round_icon.png" alt="Ashu Mods" onerror="this.src='app_icon.jpg'">
+      </div>
+      <h1 class="login-title">ASHU MODS</h1>
+      <p class="login-subtitle">Cloud Control & Security Management Console</p>
+
+      <form id="admin-login-form">
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="login-username">Administrator Username</label>
+          <input type="text" id="login-username" class="form-input" placeholder="Enter admin username" autocomplete="username" required>
+        </div>
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="login-password">Master Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Enter password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; height: 46px; margin-top: 10px;">
+          AUTHENTICATE & ENTER
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MAIN APP LAYOUT
+  =========================================== -->
+  <div id="app-layout" class="app-layout" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="app_round_icon.png" alt="Ashu Mods" onerror="this.src='app_icon.jpg'">
+        </div>
+        <div class="sidebar-title">ASHU MODS</div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="menu-item active" data-section="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </div>
+        <div class="menu-item" data-section="licenses">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1-1l-3 3m5 8h-6m6-4h-6m6-4h-6M4 4h7a4 4 0 0 1 4 4v12H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+          Licenses
+        </div>
+        <div class="menu-item" data-section="devices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          Users & Devices
+        </div>
+        <div class="menu-item" data-section="social">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          Social Links
+        </div>
+        <div class="menu-item" data-section="app-config">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          App Configuration
+        </div>
+        <div class="menu-item" data-section="files">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+          Files & Operations
+        </div>
+        <div class="menu-item" data-section="versions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          App Versions
+        </div>
+        <div class="menu-item" data-section="security-logs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Security & Audit
+        </div>
+        <div class="menu-item" data-section="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Settings
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="admin-logout-btn" class="btn btn-secondary" style="width: 100%;">
+          Logout Console
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Navbar -->
+      <div class="top-navbar">
+        <div>
+          <h2 id="current-section-title" class="page-title">Dashboard Overview</h2>
+          <div style="font-size: 13px; color: var(--text-secondary); margin-top: 3px;">
+            Supabase Project: <span class="code-badge">kjqwundpnxnlqehznqyb (ashumods)</span>
+          </div>
+        </div>
+        <div class="navbar-actions">
+          <div class="badge-status">
+            <span class="badge-dot"></span>
+            Cloud API Active
+          </div>
+          <button id="refresh-all-btn" class="btn btn-secondary btn-sm">
+            Refresh Data
+          </button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SECTION 1: DASHBOARD
+      =========================================== -->
+      <section id="section-dashboard" class="content-section">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Total Licenses</span>
+              <div class="stat-icon">🔑</div>
+            </div>
+            <div id="stat-total-licenses" class="stat-value">--</div>
+            <div class="stat-meta">Active & expired keys</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Active Licenses</span>
+              <div class="stat-icon" style="color: var(--accent-green);">✓</div>
+            </div>
+            <div id="stat-active-licenses" class="stat-value">--</div>
+            <div class="stat-meta">Currently verified</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Bound Devices</span>
+              <div class="stat-icon">📱</div>
+            </div>
+            <div id="stat-total-devices" class="stat-value">--</div>
+            <div class="stat-meta">Hardware IDs registered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Active File Actions</span>
+              <div class="stat-icon">⚙️</div>
+            </div>
+            <div id="stat-total-files" class="stat-value">--</div>
+            <div class="stat-meta">Remote patch definitions</div>
+          </div>
+        </div>
+
+        <!-- Recent Security Logs -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Recent Security & Login Events</h3>
+              <p class="card-description">Live stream of verification, device binding, and anti-tamper events.</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event Type</th>
+                  <th>Severity</th>
+                  <th>Device / Info</th>
+                  <th>License</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-recent-logs">
+                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Loading live logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 2: LICENSES
+      =========================================== -->
+      <section id="section-licenses" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">License Keys Management</h3>
+              <p class="card-description">Create, suspend, revoke, and inspect device binding limits.</p>
+            </div>
+            <button id="open-create-license-btn" class="btn btn-primary btn-sm">+ Create License</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>License Key</th>
+                  <th>Status</th>
+                  <th>Duration</th>
+                  <th>Device Limit</th>
+                  <th>Activated</th>
+                  <th>Expires</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="licenses-table-body">
+                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading licenses...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 3: USERS & DEVICES
+      =========================================== -->
+      <section id="section-devices" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Bound Devices & Installations</h3>
+              <p class="card-description">Hardware identities bound to active licenses.</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Device Identifier</th>
+                  <th>Model / Brand</th>
+                  <th>Android OS</th>
+                  <th>App Version</th>
+                  <th>Last Seen</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="devices-table-body">
+                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading devices...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 4: SOCIAL LINKS
+      =========================================== -->
+      <section id="section-social" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">First-Time Social Onboarding Links</h3>
+              <p class="card-description">Remotely configure the four social community buttons shown in the APK without rebuilding.</p>
+            </div>
+            <button id="save-social-btn" class="btn btn-primary btn-sm">Save Social Links</button>
+          </div>
+
+          <form id="social-links-form">
+            <div class="form-grid">
+              <!-- WhatsApp -->
+              <div class="card" style="margin-bottom:0; background:var(--bg-input);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">WhatsApp Community</strong>
+                  <label class="switch-label">
+                    <input type="checkbox" id="social-wa-enabled" class="switch-input" checked>
+                    <span>Enabled</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Button Title</label>
+                  <input type="text" id="social-wa-name" class="form-input" value="WhatsApp Community">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Target URL</label>
+                  <input type="url" id="social-wa-url" class="form-input" value="https://chat.whatsapp.com/example">
+                </div>
+              </div>
+
+              <!-- YouTube -->
+              <div class="card" style="margin-bottom:0; background:var(--bg-input);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">YouTube Channel</strong>
+                  <label class="switch-label">
+                    <input type="checkbox" id="social-yt-enabled" class="switch-input" checked>
+                    <span>Enabled</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Button Title</label>
+                  <input type="text" id="social-yt-name" class="form-input" value="YouTube Channel">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Target URL</label>
+                  <input type="url" id="social-yt-url" class="form-input" value="https://youtube.com/@ashumods">
+                </div>
+              </div>
+
+              <!-- Telegram Main -->
+              <div class="card" style="margin-bottom:0; background:var(--bg-input);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">Telegram Main Channel</strong>
+                  <label class="switch-label">
+                    <input type="checkbox" id="social-tg-enabled" class="switch-input" checked>
+                    <span>Enabled</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Button Title</label>
+                  <input type="text" id="social-tg-name" class="form-input" value="Telegram Main Channel">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Target URL</label>
+                  <input type="url" id="social-tg-url" class="form-input" value="https://t.me/ashumods">
+                </div>
+              </div>
+
+              <!-- Telegram VIP -->
+              <div class="card" style="margin-bottom:0; background:var(--bg-input);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="font-size:14px;">Telegram VIP Group</strong>
+                  <label class="switch-label">
+                    <input type="checkbox" id="social-tg2-enabled" class="switch-input" checked>
+                    <span>Enabled</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Button Title</label>
+                  <input type="text" id="social-tg2-name" class="form-input" value="VIP Telegram Group">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Target URL</label>
+                  <input type="url" id="social-tg2-url" class="form-input" value="https://t.me/ashumods_vip">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 5: APP CONFIGURATION
+      =========================================== -->
+      <section id="section-app-config" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Remote App Configuration</h3>
+              <p class="card-description">Control displayed titles, minimum version, maintenance switch, and Get Key link.</p>
+            </div>
+            <button id="save-app-config-btn" class="btn btn-primary btn-sm">Save App Config</button>
+          </div>
+
+          <form id="app-config-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Application Name</label>
+                <input type="text" id="cfg-app-name" class="form-input" value="ASHU MODS">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Home Screen Top Title</label>
+                <input type="text" id="cfg-home-title" class="form-input" value="ASHU MODS">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Login Screen Title</label>
+                <input type="text" id="cfg-login-title" class="form-input" value="ASHU MODS">
+              </div>
+              <div class="form-group">
+                <label class="form-label">"GET KEY" URL</label>
+                <input type="url" id="cfg-get-key-url" class="form-input" value="https://t.me/ashumods">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Minimum Required Version</label>
+                <input type="text" id="cfg-min-version" class="form-input" value="1.0.0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Configuration Signing Hash</label>
+                <input type="text" id="cfg-signature" class="form-input" value="ASHU_MODS_SECURE_SIG_V1" readonly>
+              </div>
+            </div>
+
+            <!-- Maintenance Mode -->
+            <div class="card" style="margin-top:10px; background:var(--bg-input);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div>
+                  <strong style="font-size:15px;">Maintenance Mode Switch</strong>
+                  <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                    When enabled, the APK locks out users and presents the message below.
+                  </div>
+                </div>
+                <label class="switch-label">
+                  <input type="checkbox" id="cfg-maintenance-mode" class="switch-input">
+                  <span id="cfg-maintenance-text" style="font-weight:700;">Disabled</span>
+                </label>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Maintenance Banner Message</label>
+                <input type="text" id="cfg-maintenance-msg" class="form-input" value="The system is under routine maintenance. Please check back shortly.">
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 6: FILES & PATHS
+      =========================================== -->
+      <section id="section-files" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Remote File Operations & Patches</h3>
+              <p class="card-description">Manage file definitions executed when users press RUN in the APK.</p>
+            </div>
+            <button id="open-add-file-btn" class="btn btn-primary btn-sm">+ Add File Operation</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Operation Name</th>
+                  <th>Target Android Path</th>
+                  <th>Op Type</th>
+                  <th>Version</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="files-table-body">
+                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading files...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 7: APP VERSIONS
+      =========================================== -->
+      <section id="section-versions" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Application Releases & Versions</h3>
+              <p class="card-description">Enforce updates and provide direct download URLs.</p>
+            </div>
+            <button id="open-add-version-btn" class="btn btn-primary btn-sm">+ Add Version</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Version Name</th>
+                  <th>Version Code</th>
+                  <th>Download Link</th>
+                  <th>Force Update</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="versions-table-body">
+                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading versions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 8: SECURITY LOGS
+      =========================================== -->
+      <section id="section-security-logs" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Security & Tamper Audit Log</h3>
+              <p class="card-description">Real-time log of security integrity checks, failures, and device limits.</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Severity</th>
+                  <th>Device / Model</th>
+                  <th>License Key</th>
+                  <th>Details</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading audit logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 9: SETTINGS
+      =========================================== -->
+      <section id="section-settings" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Backend & Cloud Integration</h3>
+              <p class="card-description">Supabase project connection and security settings.</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Supabase URL</label>
+              <input type="text" class="form-input" value="https://kjqwundpnxnlqehznqyb.supabase.co" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Database Host</label>
+              <input type="text" class="form-input" value="db.kjqwundpnxnlqehznqyb.supabase.co" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Database Engine</label>
+              <input type="text" class="form-input" value="PostgreSQL 17.6 (Active & Healthy)" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Enforced Package Identity</label>
+              <input type="text" class="form-input" value="com.ashu.mods" readonly>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       MODAL: CREATE LICENSE
+  =========================================== -->
+  <div id="modal-create-license" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h4 class="modal-title">Generate New License Key</h4>
+        <button class="modal-close" data-close="modal-create-license">&times;</button>
+      </div>
+      <form id="create-license-form">
+        <div class="form-group">
+          <label class="form-label">License Key</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="new-license-key" class="form-input" required placeholder="e.g. ASHU-VIP-2026">
+            <button type="button" id="btn-generate-key" class="btn btn-secondary btn-sm">Random</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Duration (Days)</label>
+            <input type="number" id="new-license-days" class="form-input" value="30" min="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Device Limit</label>
+            <input type="number" id="new-license-devices" class="form-input" value="1" min="1" max="10" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes / Customer Name</label>
+          <input type="text" id="new-license-notes" class="form-input" placeholder="Optional reference notes">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+          <button type="button" class="btn btn-secondary" data-close="modal-create-license">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create License</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: ADD FILE OPERATION
+  =========================================== -->
+  <div id="modal-add-file" class="modal-overlay">
+    <div class="modal-box" style="max-width:620px;">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Remote File Definition</h4>
+        <button class="modal-close" data-close="modal-add-file">&times;</button>
+      </div>
+      <form id="add-file-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Operation Name</label>
+            <input type="text" id="file-name" class="form-input" placeholder="e.g. 120 FPS Config Patch" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Operation Type</label>
+            <select id="file-op-type" class="form-select">
+              <option value="replace">replace (Replace content)</option>
+              <option value="copy">copy (Copy / create file)</option>
+              <option value="backup_replace">backup_replace (Backup then replace)</option>
+              <option value="delete">delete (Remove target file)</option>
+              <option value="shizuku_exec">shizuku_exec (Privileged shell command)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Android Absolute Path</label>
+          <input type="text" id="file-path" class="form-input" placeholder="/storage/emulated/0/Android/data/.../config.ini" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">File Content or Shell Command Payload</label>
+          <textarea id="file-content" class="form-textarea" placeholder="Enter configuration file content or shell command..."></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Resource URL (Optional)</label>
+            <input type="url" id="file-url" class="form-input" placeholder="https://... (if external download)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sort Order</label>
+            <input type="number" id="file-order" class="form-input" value="1" min="1">
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+          <button type="button" class="btn btn-secondary" data-close="modal-add-file">Cancel</button>
+          <button type="submit" class="btn btn-primary">Deploy File Config</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
