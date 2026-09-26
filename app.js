@@ -19,6 +19,78 @@ const headers = {
 let currentSection = 'dashboard';
 
 // ====================================================================
+// UTILITY & CLIPBOARD HELPERS
+// ====================================================================
+function copyToClipboard(text) {
+  if (!text) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(`✓ Copied to clipboard: ${text}`, 'success');
+    }).catch(() => {
+      _fallbackCopy(text);
+    });
+  } else {
+    _fallbackCopy(text);
+  }
+}
+
+function _fallbackCopy(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast(`✓ Copied to clipboard: ${text}`, 'success');
+  } catch (err) {
+    showToast(`Failed to copy: ${err.message}`, 'error');
+  }
+}
+window.copyToClipboard = copyToClipboard;
+
+function compressImageFile(file, callback) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const maxSize = 512;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxSize) {
+          height = Math.round((height * maxSize) / width);
+          width = maxSize;
+        }
+      } else {
+        if (height > maxSize) {
+          width = Math.round((width * maxSize) / height);
+          height = maxSize;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      const rawBase64 = dataUrl.split(',')[1] || '';
+      callback(rawBase64, dataUrl);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+window.compressImageFile = compressImageFile;
+
+// ====================================================================
 // API HELPERS
 // ====================================================================
 async function apiGet(endpoint) {
@@ -137,6 +209,27 @@ function handleLogout() {
 // ====================================================================
 function setupNavigation() {
   const items = document.querySelectorAll('.sidebar-menu .menu-item');
+  const sidebar = document.getElementById('sidebar-drawer');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileRefreshBtn = document.getElementById('mobile-refresh-btn');
+  const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+
+  function closeMobileSidebar() {
+    sidebar?.classList.remove('open');
+    backdrop?.classList.remove('active');
+  }
+
+  function openMobileSidebar() {
+    sidebar?.classList.add('open');
+    backdrop?.classList.add('active');
+  }
+
+  mobileMenuBtn?.addEventListener('click', openMobileSidebar);
+  sidebarCloseBtn?.addEventListener('click', closeMobileSidebar);
+  backdrop?.addEventListener('click', closeMobileSidebar);
+  mobileRefreshBtn?.addEventListener('click', () => loadSectionData(currentSection));
+
   items.forEach(item => {
     item.addEventListener('click', () => {
       items.forEach(i => i.classList.remove('active'));
@@ -144,6 +237,7 @@ function setupNavigation() {
 
       const sec = item.getAttribute('data-section');
       switchSection(sec);
+      closeMobileSidebar();
     });
   });
 }
@@ -261,7 +355,12 @@ async function loadLicenses() {
 
   tbody.innerHTML = licenses.map(l => `
     <tr>
-      <td><span class="code-badge" style="font-weight:700; color:var(--text-primary); font-size:13px;">${l.license_key}</span></td>
+      <td>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="code-badge" style="font-weight:700; color:var(--text-primary); font-size:13px;">${l.license_key}</span>
+          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('${l.license_key}')" title="Copy Key" style="padding:2px 8px; font-size:11px;">📋 Copy</button>
+        </div>
+      </td>
       <td><span class="status-pill status-${l.status}">${l.status}</span></td>
       <td>${l.duration_days} Days</td>
       <td>${l.device_limit} Device(s)</td>
@@ -310,7 +409,12 @@ async function loadDevices() {
 
   tbody.innerHTML = devices.map(d => `
     <tr>
-      <td><span class="code-badge">${d.device_identifier}</span></td>
+      <td>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="code-badge">${d.device_identifier}</span>
+          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('${d.device_identifier}')" title="Copy Device ID" style="padding:2px 6px; font-size:10px;">📋</button>
+        </div>
+      </td>
       <td><strong>${d.device_model || 'Unknown'}</strong></td>
       <td>Android ${d.android_version || 'N/A'}</td>
       <td>v${d.app_version || '1.0.0'}</td>
@@ -387,6 +491,10 @@ async function saveSocialLinks() {
 
 // ====================================================================
 // 5. APP CONFIGURATION
+let uploadedAppLogoBase64 = null;
+let uploadedLoginLogoBase64 = null;
+let uploadedHomeLogoBase64 = null;
+
 // ====================================================================
 async function loadAppConfig() {
   const configs = await apiGet('app_config?id=eq.1');
@@ -400,15 +508,45 @@ async function loadAppConfig() {
   document.getElementById('cfg-min-version').value = c.minimum_version || '1.0.0';
   document.getElementById('cfg-signature').value = c.config_signature || 'ASHU_MODS_SECURE_SIG_V1';
 
+  // App General Logo Preview
+  if (c.logo_base64) {
+    document.getElementById('cfg-app-logo-preview').src = 'data:image/jpeg;base64,' + c.logo_base64;
+  }
+
+  // Login Logo Preview
+  if (c.login_logo_base64) {
+    document.getElementById('cfg-login-logo-preview').src = 'data:image/jpeg;base64,' + c.login_logo_base64;
+  } else if (c.logo_base64) {
+    document.getElementById('cfg-login-logo-preview').src = 'data:image/jpeg;base64,' + c.logo_base64;
+  }
+
+  // Home Logo Preview
+  if (c.home_logo_base64) {
+    document.getElementById('cfg-home-logo-preview').src = 'data:image/jpeg;base64,' + c.home_logo_base64;
+  } else if (c.logo_base64) {
+    document.getElementById('cfg-home-logo-preview').src = 'data:image/jpeg;base64,' + c.logo_base64;
+  }
+
+  // Maintenance mode
   const mm = document.getElementById('cfg-maintenance-mode');
   mm.checked = c.maintenance_mode === true;
   document.getElementById('cfg-maintenance-text').textContent = mm.checked ? 'ENABLED' : 'Disabled';
   document.getElementById('cfg-maintenance-text').style.color = mm.checked ? 'var(--accent-red)' : 'var(--text-secondary)';
   document.getElementById('cfg-maintenance-msg').value = c.maintenance_message || '';
+
+  // Force update
+  const fu = document.getElementById('cfg-force-update');
+  fu.checked = c.force_update === true;
+  document.getElementById('cfg-force-update-text').textContent = fu.checked ? 'ENABLED' : 'Disabled';
+  document.getElementById('cfg-force-update-text').style.color = fu.checked ? 'var(--accent-red)' : 'var(--text-secondary)';
+  document.getElementById('cfg-update-url').value = c.update_url || 'https://t.me/ashumods';
+  document.getElementById('cfg-update-msg').value = c.update_message || 'A new version of ASHU MODS is available. Please update to continue.';
 }
 
 async function saveAppConfig() {
   const mm = document.getElementById('cfg-maintenance-mode').checked;
+  const fu = document.getElementById('cfg-force-update').checked;
+
   const body = {
     app_name: document.getElementById('cfg-app-name').value.trim(),
     home_title: document.getElementById('cfg-home-title').value.trim(),
@@ -417,11 +555,26 @@ async function saveAppConfig() {
     minimum_version: document.getElementById('cfg-min-version').value.trim(),
     maintenance_mode: mm,
     maintenance_message: document.getElementById('cfg-maintenance-msg').value.trim(),
+    force_update: fu,
+    update_url: document.getElementById('cfg-update-url').value.trim(),
+    update_message: document.getElementById('cfg-update-msg').value.trim(),
     updated_at: new Date().toISOString()
   };
 
+  if (uploadedAppLogoBase64) {
+    body.logo_base64 = uploadedAppLogoBase64;
+  }
+
+  if (uploadedLoginLogoBase64) {
+    body.login_logo_base64 = uploadedLoginLogoBase64;
+  }
+
+  if (uploadedHomeLogoBase64) {
+    body.home_logo_base64 = uploadedHomeLogoBase64;
+  }
+
   await apiPatch('app_config?id=eq.1', body);
-  showToast('App configuration updated live without rebuilding APK!', 'success');
+  showToast('App configuration updated live! All mobile APKs sync in 2s.', 'success');
   loadAppConfig();
 }
 
@@ -570,6 +723,47 @@ function setupForms() {
     const txt = document.getElementById('cfg-maintenance-text');
     txt.textContent = e.target.checked ? 'ENABLED' : 'Disabled';
     txt.style.color = e.target.checked ? 'var(--accent-red)' : 'var(--text-secondary)';
+  });
+
+  // Force update checkbox change listener
+  document.getElementById('cfg-force-update').addEventListener('change', (e) => {
+    const txt = document.getElementById('cfg-force-update-text');
+    txt.textContent = e.target.checked ? 'ENABLED' : 'Disabled';
+    txt.style.color = e.target.checked ? 'var(--accent-red)' : 'var(--text-secondary)';
+  });
+
+  // App General logo file selection
+  document.getElementById('cfg-app-logo-file')?.addEventListener('change', (e) => {
+    compressImageFile(e.target.files[0], (b64, dataUrl) => {
+      document.getElementById('cfg-app-logo-preview').src = dataUrl;
+      uploadedAppLogoBase64 = b64;
+      showToast('App General Logo ready! Click Save App Config to deploy.', 'success');
+    });
+  });
+
+  // Login logo file selection
+  document.getElementById('cfg-login-logo-file')?.addEventListener('change', (e) => {
+    compressImageFile(e.target.files[0], (b64, dataUrl) => {
+      document.getElementById('cfg-login-logo-preview').src = dataUrl;
+      uploadedLoginLogoBase64 = b64;
+      showToast('Login Logo ready! Click Save App Configuration to deploy.', 'success');
+    });
+  });
+
+  // Home logo file selection
+  document.getElementById('cfg-home-logo-file')?.addEventListener('change', (e) => {
+    compressImageFile(e.target.files[0], (b64, dataUrl) => {
+      document.getElementById('cfg-home-logo-preview').src = dataUrl;
+      uploadedHomeLogoBase64 = b64;
+      showToast('Home Logo ready! Click Save App Configuration to deploy.', 'success');
+    });
+  });
+
+  // Copy newly generated key button in modal
+  document.getElementById('btn-copy-new-key')?.addEventListener('click', () => {
+    const k = document.getElementById('new-license-key').value.trim();
+    if (!k) return;
+    copyToClipboard(k);
   });
 
   // Create License Form

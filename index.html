@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ASHU MODS - Admin Security Console</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,13 +42,41 @@
        MAIN APP LAYOUT
   =========================================== -->
   <div id="app-layout" class="app-layout" style="display: none;">
+    <!-- Mobile Top Header Bar (Shown only on phones/tablets) -->
+    <header class="mobile-header">
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle Navigation">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="mobile-brand">
+        <img src="app_round_icon.png" alt="Logo" class="mobile-brand-logo" onerror="this.src='app_icon.jpg'">
+        <span class="mobile-brand-title">ASHU MODS</span>
+      </div>
+      <button id="mobile-refresh-btn" class="mobile-icon-btn" title="Refresh">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Sidebar Backdrop for Mobile -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside id="sidebar-drawer" class="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <img src="app_round_icon.png" alt="Ashu Mods" onerror="this.src='app_icon.jpg'">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="sidebar-logo">
+            <img src="app_round_icon.png" alt="Ashu Mods" onerror="this.src='app_icon.jpg'">
+          </div>
+          <div class="sidebar-title">ASHU MODS</div>
         </div>
-        <div class="sidebar-title">ASHU MODS</div>
+        <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="Close Navigation">&times;</button>
       </div>
 
       <nav class="sidebar-menu">
@@ -386,13 +414,68 @@
               </div>
             </div>
 
+            <!-- Logo Image Upload & Live Stream -->
+            <div class="card" style="margin-top:14px; background:var(--bg-input);">
+              <strong style="font-size:15px;">Dynamic Logos (Live Cloud Stream to APK)</strong>
+              <div style="font-size:12px; color:var(--text-secondary); margin-top:2px; margin-bottom:14px;">
+                Upload custom square logos here. They sync in realtime to user APKs within 2 seconds without rebuilding!
+              </div>
+
+              <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+                <!-- 1. App General Logo -->
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--border-color); border-radius:12px; background:var(--bg-card);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <img id="cfg-app-logo-preview" src="app_round_icon.png" alt="App Logo" style="width:48px; height:48px; border-radius:10px; border:1.5px solid var(--border-color); object-fit:cover; background:#000;">
+                    <div>
+                      <strong style="font-size:13px;">App General Logo</strong>
+                      <div style="font-size:11px; color:var(--text-secondary);">Splash, Onboarding, Default</div>
+                    </div>
+                  </div>
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer; margin:0;">
+                    Change
+                    <input type="file" id="cfg-app-logo-file" accept="image/png, image/jpeg, image/webp" style="display:none;">
+                  </label>
+                </div>
+
+                <!-- 2. Login Screen Logo -->
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--border-color); border-radius:12px; background:var(--bg-card);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <img id="cfg-login-logo-preview" src="app_round_icon.png" alt="Login Logo" style="width:48px; height:48px; border-radius:10px; border:1.5px solid var(--border-color); object-fit:cover; background:#000;">
+                    <div>
+                      <strong style="font-size:13px;">Login Screen Logo</strong>
+                      <div style="font-size:11px; color:var(--text-secondary);">Center branding logo</div>
+                    </div>
+                  </div>
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer; margin:0;">
+                    Change
+                    <input type="file" id="cfg-login-logo-file" accept="image/png, image/jpeg, image/webp" style="display:none;">
+                  </label>
+                </div>
+
+                <!-- 3. Home Screen Logo -->
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--border-color); border-radius:12px; background:var(--bg-card);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <img id="cfg-home-logo-preview" src="app_round_icon.png" alt="Home Logo" style="width:48px; height:48px; border-radius:10px; border:1.5px solid var(--border-color); object-fit:cover; background:#000;">
+                    <div>
+                      <strong style="font-size:13px;">Home Screen Logo</strong>
+                      <div style="font-size:11px; color:var(--text-secondary);">AppBar & Header logo</div>
+                    </div>
+                  </div>
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer; margin:0;">
+                    Change
+                    <input type="file" id="cfg-home-logo-file" accept="image/png, image/jpeg, image/webp" style="display:none;">
+                  </label>
+                </div>
+              </div>
+            </div>
+
             <!-- Maintenance Mode -->
-            <div class="card" style="margin-top:10px; background:var(--bg-input);">
+            <div class="card" style="margin-top:14px; background:var(--bg-input);">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <div>
                   <strong style="font-size:15px;">Maintenance Mode Switch</strong>
                   <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
-                    When enabled, the APK locks out users and presents the message below.
+                    When enabled, the APK locks out users, reverts applied files, and presents the message below.
                   </div>
                 </div>
                 <label class="switch-label">
@@ -403,6 +486,32 @@
               <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">Maintenance Banner Message</label>
                 <input type="text" id="cfg-maintenance-msg" class="form-input" value="The system is under routine maintenance. Please check back shortly.">
+              </div>
+            </div>
+
+            <!-- Force Update Switch -->
+            <div class="card" style="margin-top:14px; background:var(--bg-input);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div>
+                  <strong style="font-size:15px;">Force App Update Switch</strong>
+                  <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                    When enabled, users must update to the new version before they can use the app.
+                  </div>
+                </div>
+                <label class="switch-label">
+                  <input type="checkbox" id="cfg-force-update" class="switch-input">
+                  <span id="cfg-force-update-text" style="font-weight:700;">Disabled</span>
+                </label>
+              </div>
+              <div class="form-grid" style="margin-bottom:0;">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Update Download URL</label>
+                  <input type="url" id="cfg-update-url" class="form-input" value="https://t.me/ashumods">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Update Prompt Message</label>
+                  <input type="text" id="cfg-update-msg" class="form-input" value="A new version of ASHU MODS is available. Please update to continue.">
+                </div>
               </div>
             </div>
           </form>
@@ -553,6 +662,7 @@
           <div style="display:flex; gap:8px;">
             <input type="text" id="new-license-key" class="form-input" required placeholder="e.g. ASHU-VIP-2026">
             <button type="button" id="btn-generate-key" class="btn btn-secondary btn-sm">Random</button>
+            <button type="button" id="btn-copy-new-key" class="btn btn-secondary btn-sm" title="Copy Key">📋 Copy</button>
           </div>
         </div>
         <div class="form-grid">
